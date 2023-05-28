@@ -1,14 +1,15 @@
 package com.example.spring_security.controller;
 
-import com.example.spring_security.dao.RoleRepository;
 import com.example.spring_security.entity.Role;
 import com.example.spring_security.entity.User;
 import com.example.spring_security.service.RoleService;
 import com.example.spring_security.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,14 +17,15 @@ import java.util.Set;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
     private final UserService userService;
     private final RoleService roleService;
+
     @Autowired
     public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
+
 
     @GetMapping
     public String userPage(Model model) {
@@ -64,6 +66,5 @@ public class AdminController {
         userService.delete(id);
         return "redirect:/admin";
     }
-
 
 }

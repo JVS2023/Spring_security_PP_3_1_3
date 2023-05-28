@@ -1,12 +1,20 @@
 package com.example.spring_security.entity;
 
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +23,6 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -37,8 +44,11 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+
     public User() {
     }
+
+
     public User(String firstName, String lastname, int age, String email, String password, Set<Role> roles) {
         this.firstName = firstName;
         this.lastname = lastname;
@@ -48,6 +58,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+
     public User(String firstName, String lastname, int age, String email, String password) {
         this.firstName = firstName;
         this.lastname = lastname;
@@ -55,6 +66,7 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
     }
+
 
     public Set<Role> getRoles() {
         return roles;
@@ -157,4 +169,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

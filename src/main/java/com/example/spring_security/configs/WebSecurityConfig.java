@@ -1,7 +1,6 @@
 package com.example.spring_security.configs;
 
-import com.example.spring_security.service.UserServiceImp;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.spring_security.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,28 +15,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
-    @Autowired
-    private UserServiceImp userServiceImp;
+    private final CustomUserDetailService customUserDetailService;
 
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, CustomUserDetailService customUserDetailService) {
         this.successUserHandler = successUserHandler;
+        this.customUserDetailService = customUserDetailService;
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
-                .anyRequest().authenticated()
+                    .antMatchers("/", "/index").permitAll()
+                    .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
-                .permitAll()
+                    .formLogin().successHandler(successUserHandler)
+                    .permitAll()
                 .and()
-                .logout()
-                .permitAll();
+                    .logout()
+                    .permitAll();
     }
 
     @Bean
@@ -49,9 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-
-        authenticationProvider.setUserDetailsService(userServiceImp);
-
+        authenticationProvider.setUserDetailsService(customUserDetailService);
         return authenticationProvider;
     }
+
 }

@@ -4,9 +4,6 @@ import com.example.spring_security.dao.UserRepository;
 import com.example.spring_security.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class UserServiceImp implements UserService, UserDetailsService {
-
-
+public class UserServiceImp implements UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
@@ -25,6 +20,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
     @Override
     @Transactional
     public void add(User user) {
@@ -47,32 +43,17 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void update(User updatedUser) {
-
         updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-
         userRepository.save(updatedUser);
     }
 
     @Transactional
     @Override
     public void delete(int id) {
-
         userRepository.deleteById(id);
     }
 
-
-
-    @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = findUsersByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException(String.format("User '%s' not found", username));
-        }
-
-        return user;
-    }
-
     @Override
     public User findUsersByEmail(String email) {
         return userRepository.findUsersByEmail(email);
